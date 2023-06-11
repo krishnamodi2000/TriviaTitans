@@ -4,8 +4,8 @@
 ## Trivia Titans
 
 
-* *Date Created*: DD MMM YYYY
-* *Last Modification Date*: DD MMM YYYY
+* *Date Created*: 11 Jun 2023
+* *Last Modification Date*: 11 Jun 2023
 
 ## Authors
 
