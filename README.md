@@ -17,7 +17,7 @@
 
 ### Front end
 
-Build Using Flask. More details will be added on implementation!
+Build Using React. More details will be added on implementation!
 
 ### Back end
 
