@@ -1,0 +1,162 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+
+# API Gateway Resources and Methods
+  # Creates an API Gateway Rest API
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: TriviaGameApi
+
+  # Creates a resource in the API Gateway Rest API
+  RegisterUserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: registerUser
+
+  OptionsMethodForRegisterUserResource:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref RegisterUserResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+              application/json: "{\"statusCode\": 200}"
+        PassthroughBehavior: WHEN_NO_MATCH
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'content-type,token'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ''
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: false
+            method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: false
+
+  # Creates a method in the API Gateway Rest API
+  RegisterUserMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref RegisterUserResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub
+          - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations"
+          - lambdaArn: !GetAtt RegisterNewUserFunction.Arn
+
+  # Creates a resource in the API Gateway Rest API
+  AuthenticateLoginUserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: authenticateUser
+
+  OptionsMethodForAuthenticateLoginUserResource:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref AuthenticateLoginUserResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+              application/json: "{\"statusCode\": 200}"
+        PassthroughBehavior: WHEN_NO_MATCH
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'content-type,token'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ''
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: false
+            method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: false
+
+
+  # Creates a method in the API Gateway Rest API
+  AuthenticateLoginUserMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref AuthenticateLoginUserResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub
+          - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations"
+          - lambdaArn: !GetAtt AuthenticateLoginUserFunction.Arn
+
+  # API Gateway Deployment
+  # Deploys the API Gateway Rest API
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RegisterUserMethod
+      - AuthenticateLoginUserMethod
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: 'dev'
+
+
+# Lambda Functions 
+  RegisterNewUserFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'RegisterNewUser'
+      Runtime: 'python3.9'
+      Handler: 'register_new_user.lambda_handler'
+      Code:
+        S3Bucket: trivia-game-project
+        S3Key: auth_module/register_new_user.zip
+      Role: arn:aws:iam::452761854598:role/LabRole
+
+  RegisterNewUserlambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt RegisterNewUserFunction.Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/registerUser"
+
+  AuthenticateLoginUserFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'AuthenticateLoginUser'
+      Runtime: 'python3.9'
+      Handler: 'authenticate_login_user.lambda_handler'
+      Code:
+        S3Bucket: trivia-game-project
+        S3Key: auth_module/authenticate_login_user.zip
+      Role: arn:aws:iam::452761854598:role/LabRole
+
+  AuthenticateLoginUserlambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt AuthenticateLoginUserFunction.Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/authenticateUser"

@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+
+# Lambda Functions 
+  SearchTeamScoreFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'LexSearchTeamScore'
+      Runtime: 'python3.9'
+      Handler: 'search_team_score.lambda_handler'
+      Code:
+        S3Bucket: trivia-game-project
+        S3Key: lex_module/search_team_score.zip
+      Role: arn:aws:iam::452761854598:role/LabRole
