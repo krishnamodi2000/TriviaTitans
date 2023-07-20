@@ -37,15 +37,25 @@ def lambda_handler(event, context):
                 print('Response sent 200')
                 return {
                     'statusCode': 200,
-                    'body': {
-                        'group': group
-                    }
+                    'headers': {
+                        'Access-Control-Allow-Headers': 'content-type, token',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                        'Access-Control-Allow-Origin': '*', 
+                        'Allow': 'OPTIONS,POST'
+                    },
+                    'body': json.dumps({'group': group})
                 }
 
             else:
                 print('Response sent 400')
                 return {
                     'statusCode': 400,
+                    'headers': {
+                        'Access-Control-Allow-Headers': 'content-type, token',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                        'Access-Control-Allow-Origin': '*', 
+                        'Allow': 'OPTIONS,POST'
+                    },
                     'body': 'Wrong answer'
                 }
 
@@ -54,6 +64,12 @@ def lambda_handler(event, context):
             print('Response sent 500')
             return {
                 'statusCode': 500,
+                'headers': {
+                    'Access-Control-Allow-Headers': 'content-type, token',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                    'Access-Control-Allow-Origin': '*', 
+                    'Allow': 'OPTIONS,POST'
+                },
                 'body': 'Item not found in the table'
             }
 
@@ -63,5 +79,11 @@ def lambda_handler(event, context):
         print('Response sent last 500')
         return {
             'statusCode': 500,
-            'body': f'Error retrieving data: {str(e)}'
+            'headers': {
+                'Access-Control-Allow-Headers': 'content-type, token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                'Access-Control-Allow-Origin': '*',  
+                'Allow': 'OPTIONS,POST'
+            },
+            'body': json.dumps(f'Error retrieving data: {str(e)}')
         }

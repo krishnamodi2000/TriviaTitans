@@ -39,7 +39,7 @@ const RegisterSuccessRedirect = () => {
 
     // Make a POST request to the API
     axios
-      .post('https://kszp4tfgengzr76b2yr6znalia0jyykr.lambda-url.us-east-1.on.aws/', data, config)
+      .post('https://koa31w1cn8.execute-api.us-east-1.amazonaws.com/dev/registerUser', data, config)
       .then((response) => {
         console.log('Submission successful:', response.data);
         navigate('/userDashboard');

@@ -14,7 +14,6 @@ def lambda_handler(event, context):
     body = str(event['body']).replace('\n', '')
     json_body = json.loads(body)
 
-
     print(json_body)
 
     try:
@@ -22,6 +21,12 @@ def lambda_handler(event, context):
         table.put_item(Item=json_body)
         response = {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Headers': 'content-type, token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                'Access-Control-Allow-Origin': '*',
+                'Allow': 'OPTIONS,POST'
+            },
             'body': 'Data inserted successfully!'
         }
 
@@ -30,6 +35,12 @@ def lambda_handler(event, context):
     except Exception as e:
         response = {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Headers': 'content-type, token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                'Access-Control-Allow-Origin': '*',
+                'Allow': 'OPTIONS,POST'
+            },
             'body': f'Error inserting data: {str(e)}'
         }
 

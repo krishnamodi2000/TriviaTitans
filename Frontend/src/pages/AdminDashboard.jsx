@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import { Card, Button, Alert } from "react-bootstrap"
+import React, { useState } from "react";
+import { Card, Button, Alert } from "react-bootstrap";
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
-export default function UserDashboard() {
+export default function AdminDashboard() {
   const [error, setError] = useState("")
   const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ export default function UserDashboard() {
     <>
       <Card>
         <Card.Body>
-          <h2 className="text-center mb-4">User Profile</h2>
+          <h2 className="text-center mb-4">Admin Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <strong>Email:</strong> {currentUser.email}
         </Card.Body>
