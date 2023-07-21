@@ -8,6 +8,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminLandingPage from './pages/AdminLandingPage';
 import LoginMFAAuth from './pages/LoginMFAAuth';
 import PrivateRoute from './PrivateRoute';
+import Games from './pages/game-lobby/Games';
+import GameDetails from './pages/game-lobby/GameDetails';
 import { BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext"
@@ -29,6 +31,8 @@ function App() {
                 <Route path="/userDashboard" element={<UserDashboard />} />
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/adminLandingPage" element={<AdminLandingPage />} />
+                <Route path="/games" element={<Games />} />
+                <Route path="/games/:id" element={<GameDetails />} />
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>
