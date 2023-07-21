@@ -39,7 +39,7 @@ function Games() {
         <div key={game.game_id}>
           <h2>{game.name}</h2>
           <p>{game.description}</p>
-          <Link to={`/game/${game.game_id}`}>More Details</Link>
+          <Link to={`/games/${game.game_id}`}>More Details</Link>
           <hr></hr>
         </div>
       ))}
