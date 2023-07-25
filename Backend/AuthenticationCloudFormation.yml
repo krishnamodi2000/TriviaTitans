@@ -8,13 +8,48 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Name: TriviaGameApi
+  
+  UserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      RestApiId: !Ref ApiGatewayRestApi
+      PathPart: 'user'
+
+  LambdaAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      IdentitySource: method.request.header.token
+      Name: LambdaAuthorizer
+      AuthorizerUri: !Sub
+        - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
+        - lambdaArn: !GetAtt [ LambdaAuthorizerFunction, Arn ]
+      RestApiId: !Ref ApiGatewayRestApi
+      Type: TOKEN
+      AuthorizerResultTtlInSeconds: 0
+
+  LambdaAllowAPIGateway:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt [ LambdaAuthorizerFunction, Arn ]
+      Action: lambda:invokeFunction
+      Principal: apigateway.amazonaws.com
+
+  AuthorizerApiGatewayResponse:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+          "gatewayresponse.header.Access-Control-Allow-Headers": "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId: !Ref ApiGatewayRestApi
 
   # Creates a resource in the API Gateway Rest API
   RegisterUserResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref ApiGatewayRestApi
-      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      ParentId: !Ref UserResource
       PathPart: registerUser
 
   OptionsMethodForRegisterUserResource:
@@ -48,10 +83,11 @@ Resources:
   RegisterUserMethod:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref LambdaAuthorizer
       RestApiId: !Ref ApiGatewayRestApi
       ResourceId: !Ref RegisterUserResource
       HttpMethod: POST
-      AuthorizationType: NONE
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
@@ -64,16 +100,16 @@ Resources:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref ApiGatewayRestApi
-      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      ParentId: !Ref UserResource
       PathPart: authenticateUser
 
   OptionsMethodForAuthenticateLoginUserResource:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: NONE
       RestApiId: !Ref ApiGatewayRestApi
       ResourceId: !Ref AuthenticateLoginUserResource
       HttpMethod: OPTIONS
-      AuthorizationType: NONE
       Integration:
         Type: MOCK
         RequestTemplates:
@@ -99,10 +135,11 @@ Resources:
   AuthenticateLoginUserMethod:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref LambdaAuthorizer
       RestApiId: !Ref ApiGatewayRestApi
       ResourceId: !Ref AuthenticateLoginUserResource
       HttpMethod: POST
-      AuthorizationType: NONE
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
@@ -126,9 +163,12 @@ Resources:
   RegisterNewUserFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 'RegisterNewUser'
+      FunctionName: 'RegisterNewUserV1'
       Runtime: 'python3.9'
+      Timeout: 60
       Handler: 'register_new_user.lambda_handler'
+      Layers:
+        - !Ref FirebaseAdminLayer
       Code:
         S3Bucket: trivia-game-project
         S3Key: auth_module/register_new_user.zip
@@ -140,13 +180,14 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt RegisterNewUserFunction.Arn
       Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/registerUser"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/user/registerUser"
 
   AuthenticateLoginUserFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 'AuthenticateLoginUser'
+      FunctionName: 'AuthenticateLoginUserV1'
       Runtime: 'python3.9'
+      Timeout: 60
       Handler: 'authenticate_login_user.lambda_handler'
       Code:
         S3Bucket: trivia-game-project
@@ -159,4 +200,29 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt AuthenticateLoginUserFunction.Arn
       Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/authenticateUser"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/user/authenticateUser"
+
+  FirebaseAdminLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      LayerName: FirebaseAdminLayer
+      CompatibleRuntimes:
+        - python3.9
+      Content:
+        S3Bucket: trivia-game-project
+        S3Key: layer/firebaseAdmin.zip
+      Description: Firebase Admin dependency
+
+  LambdaAuthorizerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaAuthorizerFunction
+      Handler: lambda_authorizer.lambda_handler
+      Role: arn:aws:iam::452761854598:role/LabRole
+      Runtime: python3.9
+      Timeout: 60
+      Layers:
+        - !Ref FirebaseAdminLayer
+      Code:
+        S3Bucket: trivia-game-project
+        S3Key: authorizer/lambda_authorizer.zip
