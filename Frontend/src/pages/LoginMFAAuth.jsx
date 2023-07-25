@@ -33,9 +33,7 @@ const LoginMFAAuth = () => {
 
     const data = {
       'question': questions[questionIndex],
-      'answer': answerRef.current.value,
-      'email': currentUser.email,
-      'userId': currentUser.uid
+      'answer': answerRef.current.value
     };
 
     const config = {
@@ -47,7 +45,8 @@ const LoginMFAAuth = () => {
 
     try {
       setError('');
-      const response = await axios.post('https://koa31w1cn8.execute-api.us-east-1.amazonaws.com/dev/authenticateUser', data, config);
+      console.log(config)
+      const response = await axios.post('https://wy09zek0xa.execute-api.us-east-1.amazonaws.com/dev/user/authenticateUser', data, config);
       console.log('POST response:', response.data);
       if ('group' in response.data) {
         const groupValue = response.data.group;
@@ -58,13 +57,14 @@ const LoginMFAAuth = () => {
         } 
       }
     } catch (error) {
+      console.log(error)
       // Handle wrong answer
       setWrongAttempts(prevAttempts => prevAttempts + 1); // Increment wrong attempts
       if (wrongAttempts >= 2) { // If three or more wrong attempts
         await logout()
         navigate("/login")
       } else {
-        setError(error.response.data);
+        setError(error.response.data.message);
       }
     }
   };
@@ -73,6 +73,7 @@ const LoginMFAAuth = () => {
     <div className='form'>
       <h2>Please answer below question to proceed further.</h2>
       {error && <Alert variant="danger">{error}</Alert>}
+      {currentUser.accessToken}
       <form onSubmit={handleSubmit}>
         <label htmlFor="q">{questions[questionIndex]}</label>
         <input
