@@ -25,10 +25,7 @@ const RegisterSuccessRedirect = () => {
         'What year was your father born?': fatherBornYearRef.current.value,
         'What is your favourite color?': colorRef.current.value,
       },
-      'email': currentUser.email,
-      'name': nameRef.current.value,
-      'userId': currentUser.uid,
-      'group': 'user'
+      'name': nameRef.current.value
     };
 
     const config = {
@@ -39,13 +36,13 @@ const RegisterSuccessRedirect = () => {
 
     // Make a POST request to the API
     axios
-      .post('https://koa31w1cn8.execute-api.us-east-1.amazonaws.com/dev/registerUser', data, config)
+      .post('https://wy09zek0xa.execute-api.us-east-1.amazonaws.com/dev/user/registerUser', data, config)
       .then((response) => {
         console.log('Submission successful:', response.data);
         navigate('/userDashboard');
       })
       .catch((error) => {
-        setError(error);
+        setError(error.response.data);
       });
   };
 

@@ -8,6 +8,8 @@ def lambda_handler(event, context):
 
     # Choose the table you want to fetch data from
     table = dynamodb.Table('TriviaUserLoginInformation')
+    authorizer = event['requestContext']['authorizer']
+    userId = authorizer['userId']
 
     # Retrieve email from the event
     body = str(event['body']).replace('\n', '')
@@ -18,7 +20,7 @@ def lambda_handler(event, context):
         # Perform the DynamoDB query operation
         response = table.get_item(
             Key={
-                'userId': json_body['userId']
+                'userId': userId
             }
         )
 
@@ -56,7 +58,7 @@ def lambda_handler(event, context):
                         'Access-Control-Allow-Origin': '*', 
                         'Allow': 'OPTIONS,POST'
                     },
-                    'body': 'Wrong answer'
+                    'body': json.dumps({'message': 'Wrong answer'}) 
                 }
 
         else:
@@ -70,7 +72,7 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Origin': '*', 
                     'Allow': 'OPTIONS,POST'
                 },
-                'body': 'Item not found in the table'
+                'body': json.dumps({'message': 'Item not found in the table'}) 
             }
 
     except Exception as e:
@@ -85,5 +87,5 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Origin': '*',  
                 'Allow': 'OPTIONS,POST'
             },
-            'body': json.dumps(f'Error retrieving data: {str(e)}')
+            'body': json.dumps({'message': f'Error retrieving data: {str(e)}'})
         }
