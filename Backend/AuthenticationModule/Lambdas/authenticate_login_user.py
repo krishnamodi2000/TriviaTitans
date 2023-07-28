@@ -8,6 +8,8 @@ def lambda_handler(event, context):
 
     # Choose the table you want to fetch data from
     table = dynamodb.Table('TriviaUserLoginInformation')
+    authorizer = event['requestContext']['authorizer']
+    userId = authorizer['userId']
 
     # Retrieve email from the event
     body = str(event['body']).replace('\n', '')
@@ -18,7 +20,7 @@ def lambda_handler(event, context):
         # Perform the DynamoDB query operation
         response = table.get_item(
             Key={
-                'userId': json_body['userId']
+                'userId': userId
             }
         )
 
@@ -37,16 +39,26 @@ def lambda_handler(event, context):
                 print('Response sent 200')
                 return {
                     'statusCode': 200,
-                    'body': {
-                        'group': group
-                    }
+                    'headers': {
+                        'Access-Control-Allow-Headers': 'content-type, token',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                        'Access-Control-Allow-Origin': '*', 
+                        'Allow': 'OPTIONS,POST'
+                    },
+                    'body': json.dumps({'group': group})
                 }
 
             else:
                 print('Response sent 400')
                 return {
                     'statusCode': 400,
-                    'body': 'Wrong answer'
+                    'headers': {
+                        'Access-Control-Allow-Headers': 'content-type, token',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                        'Access-Control-Allow-Origin': '*', 
+                        'Allow': 'OPTIONS,POST'
+                    },
+                    'body': json.dumps({'message': 'Wrong answer'}) 
                 }
 
         else:
@@ -54,7 +66,13 @@ def lambda_handler(event, context):
             print('Response sent 500')
             return {
                 'statusCode': 500,
-                'body': 'Item not found in the table'
+                'headers': {
+                    'Access-Control-Allow-Headers': 'content-type, token',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                    'Access-Control-Allow-Origin': '*', 
+                    'Allow': 'OPTIONS,POST'
+                },
+                'body': json.dumps({'message': 'Item not found in the table'}) 
             }
 
     except Exception as e:
@@ -63,5 +81,11 @@ def lambda_handler(event, context):
         print('Response sent last 500')
         return {
             'statusCode': 500,
-            'body': f'Error retrieving data: {str(e)}'
+            'headers': {
+                'Access-Control-Allow-Headers': 'content-type, token',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST',
+                'Access-Control-Allow-Origin': '*',  
+                'Allow': 'OPTIONS,POST'
+            },
+            'body': json.dumps({'message': f'Error retrieving data: {str(e)}'})
         }

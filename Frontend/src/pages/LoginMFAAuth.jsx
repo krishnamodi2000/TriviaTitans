@@ -16,7 +16,8 @@ const LoginMFAAuth = () => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const answerRef = useRef();
   const [error, setError] = useState('');
-  const { currentUser } = useAuth()
+  const [wrongAttempts, setWrongAttempts] = useState(0); 
+  const { currentUser, logout } = useAuth(); 
 
   useEffect(() => {
     generateRandomQuestion();
@@ -32,27 +33,39 @@ const LoginMFAAuth = () => {
 
     const data = {
       'question': questions[questionIndex],
-      'answer': answerRef.current.value,
-      'email': currentUser.email,
-      'userId': currentUser.uid
+      'answer': answerRef.current.value
     };
 
     const config = {
-      headers:{
+      headers: {
         'content-type': 'application/json',
         'token': currentUser.accessToken
       }
     };
 
     try {
-      setError('')
-      const response = await axios.post('https://e3cuaczgn5fpbkrrd24gtmkvze0jwquv.lambda-url.us-east-1.on.aws/', data, config);
+      setError('');
+      console.log(config)
+      const response = await axios.post('https://wy09zek0xa.execute-api.us-east-1.amazonaws.com/dev/user/authenticateUser', data, config);
       console.log('POST response:', response.data);
-      //get the group and redirect to corresponding page
-      console.log('Success');
-      navigate('/userDashboard')
+      if ('group' in response.data) {
+        const groupValue = response.data.group;
+        if (groupValue === 'user') {
+          navigate('/userDashboard'); // Redirect to user dashboard if the 'group' value is 'user'
+        } else {
+          navigate('/adminLandingPage'); // Redirect to admin dashboard if the 'group' value is 'admin'
+        } 
+      }
     } catch (error) {
-      return setError(error.response.data);
+      console.log(error)
+      // Handle wrong answer
+      setWrongAttempts(prevAttempts => prevAttempts + 1); // Increment wrong attempts
+      if (wrongAttempts >= 2) { // If three or more wrong attempts
+        await logout()
+        navigate("/login")
+      } else {
+        setError(error.response.data.message);
+      }
     }
   };
 
@@ -60,6 +73,7 @@ const LoginMFAAuth = () => {
     <div className='form'>
       <h2>Please answer below question to proceed further.</h2>
       {error && <Alert variant="danger">{error}</Alert>}
+      {currentUser.accessToken}
       <form onSubmit={handleSubmit}>
         <label htmlFor="q">{questions[questionIndex]}</label>
         <input
