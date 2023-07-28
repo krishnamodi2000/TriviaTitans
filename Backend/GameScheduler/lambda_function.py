@@ -70,3 +70,22 @@ def lambda_handler(event, context):
 
 
     schedule_game(game_id, scheduled_time)
+    
+    game_details = get_game_details(game_id)
+    
+    response_payload = {
+        'game_id': game_id,
+        'category': game_details['category'],
+        'difficulty_level': game_details['difficulty_level'],
+        'time_frame_minutes': int(game_details['time_frame_minutes']),
+        'scheduled_time': str(scheduled_time)
+    }
+
+    # Return the response payload as the Lambda response
+    return response_payload
+
+
+
+
+
+
