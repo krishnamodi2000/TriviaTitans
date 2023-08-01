@@ -30,6 +30,7 @@ function App() {
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/adminLandingPage" element={<AdminLandingPage />} />
                 <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/compareUser" element={<AchievementComparison />} />
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>
