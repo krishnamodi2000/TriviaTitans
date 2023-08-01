@@ -29,6 +29,7 @@ function App() {
                 <Route path="/userDashboard" element={<UserDashboard />} />
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/adminLandingPage" element={<AdminLandingPage />} />
+                <Route path="/userProfile" element={<UserProfile />} />
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>
