@@ -61,6 +61,13 @@ Resources:
     Properties:
       Name: LeaderboardApiGateway
 
+  ApiGatewayAllCategoryResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: getallcategory
+
   ApiGatewayCategoryResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -102,6 +109,18 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
       ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
       PathPart: updateteamscore
+
+  ApiGatewayAllCategoryMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayAllCategoryResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardByCategoryLambdaFunction.Arn}/invocations"
 
   ApiGatewayCategoryMethod:
     Type: AWS::ApiGateway::Method
@@ -178,6 +197,7 @@ Resources:
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     DependsOn: 
+      - ApiGatewayAllCategoryMethod
       - ApiGatewayCategoryMethod
       - ApiGatewayTimeFrameMethod
       - ApiGatewayTopPlayersMethod
@@ -187,6 +207,18 @@ Resources:
     Properties:
       RestApiId: !Ref ApiGatewayRestApi
       StageName: prod
+
+  LeaderboardAllCategoryLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-getAllCategory
+      Runtime: nodejs14.x
+      Handler: functions/getallcategory.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
 
   LeaderboardByCategoryLambdaFunction:
     Type: AWS::Lambda::Function
@@ -259,6 +291,14 @@ Resources:
       Code:
         S3Bucket: serverless-app-b00927702
         S3Key: leaderboard.zip
+
+  lambdaApiGatewayAllCategoryInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardAllCategoryLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/GET/getallcategory
 
   lambdaApiGatewayCategoryInvoke:
     Type: AWS::Lambda::Permission
