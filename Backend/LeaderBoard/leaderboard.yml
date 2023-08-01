@@ -120,7 +120,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardByCategoryLambdaFunction.Arn}/invocations"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardAllCategoryLambdaFunction.Arn}/invocations"
 
   ApiGatewayCategoryMethod:
     Type: AWS::ApiGateway::Method
