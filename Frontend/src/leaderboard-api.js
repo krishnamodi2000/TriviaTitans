@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://il29bzij7j.execute-api.us-east-1.amazonaws.com/prod';
+const API_BASE_URL = 'https://irr95kx9jh.execute-api.us-east-1.amazonaws.com/prod';
 
 // API endpoint to update team score
 export const updateTeamScore = async (teamData) => {
