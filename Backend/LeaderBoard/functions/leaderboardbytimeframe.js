@@ -86,6 +86,8 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(result.Items),
             headers: {
                 'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Credentials': 'true'
             },
         };
     } catch (error) {
@@ -94,6 +96,8 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(`Error: ${error.message}`),
             headers: {
                 'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Credentials': 'true'
             },
         };
     }
