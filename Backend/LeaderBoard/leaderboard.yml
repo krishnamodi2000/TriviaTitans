@@ -1,0 +1,360 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation Template to deploy a Lambda function with a Leaderboard API Gateway using Node.js environment
+
+Resources:
+  PlayerLeaderboard:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: player-leaderboard
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: playerid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      BillingMode: PROVISIONED
+      GlobalSecondaryIndexes:
+        - IndexName: PlayerIdIndex
+          KeySchema:
+            - AttributeName: playerid
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+  TeamLeaderboard:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: team-leaderboard
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: teamid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5 
+        WriteCapacityUnits: 5 
+      BillingMode: PROVISIONED 
+      GlobalSecondaryIndexes:
+        - IndexName: TeamIdIndex
+          KeySchema:
+            - AttributeName: teamid
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5  
+            WriteCapacityUnits: 5
+
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: LeaderboardApiGateway
+
+  ApiGatewayAllCategoryResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: getallcategory
+
+  ApiGatewayCategoryResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: getleaderboardbycategory
+
+  ApiGatewayTimeFrameResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: getleaderboardbytimeframe
+
+  ApiGatewayTopPlayersResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: gettopperformingplayers
+
+  ApiGatewayTopTeamsResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: gettopperformingteams
+
+  ApiGatewayUpdatePlayerResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: updateplayerscore
+
+  ApiGatewayUpdateTeamResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: updateteamscore
+
+  ApiGatewayAllCategoryMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayAllCategoryResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardAllCategoryLambdaFunction.Arn}/invocations"
+
+  ApiGatewayCategoryMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayCategoryResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardByCategoryLambdaFunction.Arn}/invocations"
+
+  ApiGatewayTimeFrameMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayTimeFrameResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardByTimeFrameLambdaFunction.Arn}/invocations"
+
+  ApiGatewayTopPlayersMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayTopPlayersResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardTopPlayersLambdaFunction.Arn}/invocations"
+
+  ApiGatewayTopTeamsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayTopTeamsResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardTopTeamsLambdaFunction.Arn}/invocations"
+
+  ApiGatewayUpdatePlayersMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayUpdatePlayerResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardUpdatePlayerLambdaFunction.Arn}/invocations"
+
+  ApiGatewayUpdateTeamsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayUpdateTeamResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LeaderboardUpdateTeamLambdaFunction.Arn}/invocations"
+
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: 
+      - ApiGatewayAllCategoryMethod
+      - ApiGatewayCategoryMethod
+      - ApiGatewayTimeFrameMethod
+      - ApiGatewayTopPlayersMethod
+      - ApiGatewayTopTeamsMethod
+      - ApiGatewayUpdatePlayersMethod
+      - ApiGatewayUpdateTeamsMethod
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: prod
+
+  LeaderboardAllCategoryLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-getAllCategory
+      Runtime: nodejs14.x
+      Handler: functions/getallcategory.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardByCategoryLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-leaderboardByCategory
+      Runtime: nodejs14.x
+      Handler: functions/leaderboardbycategory.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardByTimeFrameLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-leaderboardByTimeFrame
+      Runtime: nodejs14.x
+      Handler: functions/leaderboardbytimeframe.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardTopPlayersLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-topperformingplayers
+      Runtime: nodejs14.x
+      Handler: functions/topperformingplayers.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardTopTeamsLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-topperformingteams
+      Runtime: nodejs14.x
+      Handler: functions/topperformingteams.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardUpdatePlayerLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-updateplayerscore
+      Runtime: nodejs14.x
+      Handler: functions/updateplayerscore.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  LeaderboardUpdateTeamLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: leaderboard-updateteamscore
+      Runtime: nodejs14.x
+      Handler: functions/updateteamscore.handler
+      Role: arn:aws:iam::595884734635:role/LabRole
+      Timeout: 30
+      Code:
+        S3Bucket: serverless-app-b00927702
+        S3Key: leaderboard.zip
+
+  lambdaApiGatewayAllCategoryInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardAllCategoryLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/GET/getallcategory
+
+  lambdaApiGatewayCategoryInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardByCategoryLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/getleaderboardbycategory
+
+  lambdaApiGatewayTimeframeInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardByTimeFrameLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/getleaderboardbytimeframe
+
+  lambdaApiGatewayTopPlayersInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardTopPlayersLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/gettopperformingplayers
+
+  lambdaApiGatewayTopTeamsInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardTopTeamsLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/gettopperformingteams
+
+  lambdaApiGatewayUpdatePlayerInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardUpdatePlayerLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/updateplayerscore
+
+  lambdaApiGatewayUpdateTeamInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LeaderboardUpdateTeamLambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/POST/updateteamscore
+
+  lambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/serverless-application
+      RetentionInDays: 5
+
+Outputs:
+  ApiGatewayInvokeURL:
+    Description: URL to invoke the API Gateway
+    Value: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/prod/{proxy+}"

@@ -33,6 +33,10 @@ function App() {
                 <Route path="/adminLandingPage" element={<AdminLandingPage />} />
                 <Route path="/games" element={<Games />} />
                 <Route path="/games/:id" element={<GameDetails />} />
+                <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/compareUser" element={<AchievementComparison />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/topleaderboard" element={<TopPerforming />} />
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>
