@@ -13,7 +13,11 @@ import GameDetails from './pages/game-lobby/GameDetails';
 import { BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext"
- 
+import UserProfile from './pages/UserProfile';
+import AchievementComparison from './pages/AchievementComparison';
+import Leaderboard from './pages/Leaderboard';
+import TopPerforming from './pages/TopPerforming';
+
 function App() {
  
   return (
