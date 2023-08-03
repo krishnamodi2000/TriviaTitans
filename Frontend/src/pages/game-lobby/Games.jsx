@@ -37,8 +37,8 @@ function Games() {
 
       {filteredGames.map(game => (
         <div key={game.game_id}>
-          <h2>{game.name}</h2>
-          <p>{game.description}</p>
+          <h2 style={{ textAlign: 'left' }}>{game.name}</h2>
+          <p style={{ textAlign: 'left' }}>{game.description}</p>
           <Link to={`/games/${game.game_id}`}>More Details</Link>
           <hr></hr>
         </div>
