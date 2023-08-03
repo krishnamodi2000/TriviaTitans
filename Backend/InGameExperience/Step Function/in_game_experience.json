@@ -1,0 +1,88 @@
+{
+  "Comment": "In Game experience",
+  "StartAt": "First Question?",
+  "States": {
+    "First Question?": {
+      "Comment": "Checks if the question is first or not",
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.question_number",
+          "StringEquals": "1",
+          "Next": "Update EventBridge Rule"
+        }
+      ],
+      "Default": "Show Answer and Scores"
+    },
+    "Show Answer and Scores": {
+      "Comment": "Push Answer and Score Details",
+      "Type": "Pass",
+      "Next": "Wait 15 secs"
+    },
+    "Update EventBridge Rule": {
+      "Comment": "Update the event bridge rule to trigger the lambda every 1 min",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:699271866560:function:UpdateEventBridgeRuleToOneMinute",
+      "Next": "Delay 15 secs"
+    },
+    "Delay 15 secs": {
+      "Comment": "A Wait state delays the state machine from continuing for a specified time.",
+      "Type": "Wait",
+      "Seconds": 0,
+      "Next": "Push Question To UI"
+    },
+    "Wait 15 secs": {
+      "Comment": "A Wait state delays the state machine from continuing for a specified time.",
+      "Type": "Wait",
+      "Seconds": 0,
+      "Next": "Push Question To UI"
+    },
+    "Push Question To UI": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:699271866560:function:call_game:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "Check If Last Question"
+    },
+    "Check If Last Question": {
+      "Comment": "Pushes the question to UI",
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.question_number",
+          "StringEqualsPath": "$.total_questions",
+          "Next": "Perform CleanUp"
+        }
+      ],
+      "Default": "Update Question Number in Event Rule"
+    },
+    "Update Question Number in Event Rule": {
+      "Comment": "Update the question number in the event rule",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:699271866560:function:UpdateQuestionNumberInEventRule",
+      "End": true
+    },
+    "Perform CleanUp": {
+      "Comment": "Disable the Event Bridge Rule",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:699271866560:function:PerformCleanUp",
+      "End": true
+    }
+  }
+}
