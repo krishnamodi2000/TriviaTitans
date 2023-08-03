@@ -23,7 +23,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="form">
-      <h2>Trivia Game Login Page</h2>
+      <h2>Trivia Game Reset Password</h2>
       <form>
         <input
           type="email"

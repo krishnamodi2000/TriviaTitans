@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+
+  StartGameFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'StartGame'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'start_game.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/start_game.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+      Environment:
+        Variables:
+          step_function_arn: !GetAtt [ InGameExperienceStateMachine, Arn ]
+
+  PrepareForGameFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'PrepareForGame'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'prepare_game.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/prepare_game.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+  
+  CreateEventBridgeRuleToScheduleGameFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'CreateEventBridgeRuleToScheduleGame'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'create_event_rule_schedule_game.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/create_event_rule_schedule_game.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+
+  UpdateEventBridgeRuleToOneMinuteFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'UpdateEventBridgeRuleToOneMinute'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'update_event_rule_one_min.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/update_event_rule_one_min.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+
+  UpdateQuestionNumberInEventRuleFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'UpdateQuestionNumberInEventRule'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'update_question_number.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/update_question_number.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+
+  PerformCleanUpFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'PerformCleanUp'
+      Runtime: 'python3.9'
+      Timeout: 60
+      Handler: 'perform_clean_up.lambda_handler'
+      Code:
+        S3Bucket: csci5410-trivia-game-project
+        S3Key: in_game_module/perform_clean_up.zip
+      Role: arn:aws:iam::699271866560:role/LabRole
+
+  InGameExperienceStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: InGameExperienceStateMachine
+      StateMachineType: STANDARD
+      LoggingConfiguration:
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt InGameExperienceStateMachineLogGroup.Arn
+        Level: ALL
+        IncludeExecutionData: True
+      DefinitionS3Location:
+        Bucket: csci5410-trivia-game-project
+        Key: in_game_module/in_game_experience.json
+      RoleArn: arn:aws:iam::699271866560:role/LabRole
+
+  InGameExperienceStateMachineLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/stepfunction/InGameExperienceStateMachineLogGroup
