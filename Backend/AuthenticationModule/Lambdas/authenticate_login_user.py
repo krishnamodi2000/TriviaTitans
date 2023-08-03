@@ -1,13 +1,15 @@
+import os
 import boto3
-from boto3.dynamodb.types import TypeDeserializer
 import json
 
-def lambda_handler(event, context):
-    # Connect to DynamoDB
-    dynamodb = boto3.resource('dynamodb')
+# Connect to DynamoDB
+dynamodb = boto3.resource('dynamodb')
+dynamo_table_name = os.environ['dynamo_table_name']
 
+
+def lambda_handler(event, context):
     # Choose the table you want to fetch data from
-    table = dynamodb.Table('TriviaUserLoginInformation')
+    table = dynamodb.Table('dynamo_table_name')
     authorizer = event['requestContext']['authorizer']
     userId = authorizer['userId']
 

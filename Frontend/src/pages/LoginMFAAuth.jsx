@@ -37,7 +37,7 @@ const LoginMFAAuth = () => {
     };
 
     const config = {
-      headers: {
+      headers: {  
         'content-type': 'application/json',
         'token': currentUser.accessToken
       }
@@ -46,7 +46,7 @@ const LoginMFAAuth = () => {
     try {
       setError('');
       console.log(config)
-      const response = await axios.post('https://wy09zek0xa.execute-api.us-east-1.amazonaws.com/dev/user/authenticateUser', data, config);
+      const response = await axios.post('https://mqpjoegrxe.execute-api.us-east-1.amazonaws.com/dev/user/authenticateUser', data, config);
       console.log('POST response:', response.data);
       if ('group' in response.data) {
         const groupValue = response.data.group;
@@ -73,7 +73,7 @@ const LoginMFAAuth = () => {
     <div className='form'>
       <h2>Please answer below question to proceed further.</h2>
       {error && <Alert variant="danger">{error}</Alert>}
-      {currentUser.accessToken}
+      {/* {currentUser.accessToken} */}
       <form onSubmit={handleSubmit}>
         <label htmlFor="q">{questions[questionIndex]}</label>
         <input

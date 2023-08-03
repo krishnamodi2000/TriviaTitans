@@ -10,8 +10,6 @@ from firebase_admin import credentials, auth
 cred = credentials.Certificate("firebase-admin.json")
 firebase_admin.initialize_app(cred)
 
-app_client_id = os.environ['client_id']
-
 
 def verify_token(token):
     response = auth.verify_id_token(token)
@@ -33,7 +31,8 @@ def lambda_handler(event, context):
     try:
         print(event)
         resource = event['methodArn']
-        verification_result = verify_token(event["token"])
+        verification_result = verify_token(event["authorizationToken"])
+        print(verification_result)
         if verification_result:
             print("policy is allowed")
 

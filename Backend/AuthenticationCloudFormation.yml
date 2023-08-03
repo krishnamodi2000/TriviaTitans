@@ -2,8 +2,21 @@ AWSTemplateFormatVersion: '2010-09-09'
 
 Resources:
 
+# DynamoDB Table
+  TriviaUserLoginInformationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: 'userId'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'userId'
+          KeyType: 'HASH'
+      BillingMode: PAY_PER_REQUEST
+      TableName: TriviaUserLoginInformation
+
 # API Gateway Resources and Methods
-  # Creates an API Gateway Rest API
+# Creates an API Gateway Rest API
   ApiGatewayRestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -158,21 +171,24 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
       StageName: 'dev'
 
-
 # Lambda Functions 
   RegisterNewUserFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 'RegisterNewUserV1'
+      FunctionName: 'RegisterNewUser'
       Runtime: 'python3.9'
       Timeout: 60
       Handler: 'register_new_user.lambda_handler'
       Layers:
         - !Ref FirebaseAdminLayer
       Code:
-        S3Bucket: trivia-game-project
+        S3Bucket: csci5410-trivia-game-project
         S3Key: auth_module/register_new_user.zip
-      Role: arn:aws:iam::452761854598:role/LabRole
+      Role: arn:aws:iam::699271866560:role/LabRole
+      Environment:
+        Variables:
+          topic_arn: !Ref TriviaGameUpdatesTopic
+          dynamo_table_name: !Ref TriviaUserLoginInformationTable
 
   RegisterNewUserlambdaApiGatewayInvoke:
     Type: AWS::Lambda::Permission
@@ -180,19 +196,22 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt RegisterNewUserFunction.Arn
       Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/user/registerUser"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:699271866560:${ApiGatewayRestApi}/*/POST/user/registerUser"
 
   AuthenticateLoginUserFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 'AuthenticateLoginUserV1'
+      FunctionName: 'AuthenticateLoginUser'
       Runtime: 'python3.9'
       Timeout: 60
       Handler: 'authenticate_login_user.lambda_handler'
       Code:
-        S3Bucket: trivia-game-project
+        S3Bucket: csci5410-trivia-game-project
         S3Key: auth_module/authenticate_login_user.zip
-      Role: arn:aws:iam::452761854598:role/LabRole
+      Role: arn:aws:iam::699271866560:role/LabRole
+      Environment:
+        Variables:
+          dynamo_table_name: !Ref TriviaUserLoginInformationTable
 
   AuthenticateLoginUserlambdaApiGatewayInvoke:
     Type: AWS::Lambda::Permission
@@ -200,7 +219,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt AuthenticateLoginUserFunction.Arn
       Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:aws:execute-api:us-east-1:452761854598:${ApiGatewayRestApi}/*/POST/user/authenticateUser"
+      SourceArn: !Sub "arn:aws:execute-api:us-east-1:699271866560:${ApiGatewayRestApi}/*/POST/user/authenticateUser"
 
   FirebaseAdminLayer:
     Type: AWS::Lambda::LayerVersion
@@ -209,7 +228,7 @@ Resources:
       CompatibleRuntimes:
         - python3.9
       Content:
-        S3Bucket: trivia-game-project
+        S3Bucket: csci5410-trivia-game-project
         S3Key: layer/firebaseAdmin.zip
       Description: Firebase Admin dependency
 
@@ -218,11 +237,18 @@ Resources:
     Properties:
       FunctionName: LambdaAuthorizerFunction
       Handler: lambda_authorizer.lambda_handler
-      Role: arn:aws:iam::452761854598:role/LabRole
+      Role: arn:aws:iam::699271866560:role/LabRole
       Runtime: python3.9
       Timeout: 60
       Layers:
         - !Ref FirebaseAdminLayer
       Code:
-        S3Bucket: trivia-game-project
+        S3Bucket: csci5410-trivia-game-project
         S3Key: authorizer/lambda_authorizer.zip
+
+  # SNS Topics
+  # Creates an SNS Topic for trivia game updates
+  TriviaGameUpdatesTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: TriviaGameUpdatesTopic
