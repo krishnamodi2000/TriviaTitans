@@ -33,7 +33,8 @@ const Leaderboard = () => {
   const fetchAllCategories = async () => {
     try {
       const allCategories = await getAllCategories();
-      setCategories(allCategories);
+      const myObjCategories = JSON.parse(allCategories);
+      setCategories(myObjCategories);
     } catch (error) {
       console.error('Error fetching all categories:', error);
     }
