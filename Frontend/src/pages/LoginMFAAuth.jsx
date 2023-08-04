@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Alert } from 'react-bootstrap';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Heading,
+  Alert,
+} from "@chakra-ui/react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -51,7 +59,8 @@ const LoginMFAAuth = () => {
       if ('group' in response.data) {
         const groupValue = response.data.group;
         if (groupValue === 'user') {
-          navigate('/userDashboard'); // Redirect to user dashboard if the 'group' value is 'user'
+          navigate('/Homepage'); // Redirect to user dashboard if the 'group' value is 'user'
+          // console.log(currentUser);
         } else {
           navigate('/adminLandingPage'); // Redirect to admin dashboard if the 'group' value is 'admin'
         } 
@@ -70,21 +79,33 @@ const LoginMFAAuth = () => {
   };
 
   return (
-    <div className='form'>
-      <h2>Please answer below question to proceed further.</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {/* {currentUser.accessToken} */}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="q">{questions[questionIndex]}</label>
-        <input
-          id='q'
-          type="text"
-          ref={answerRef}
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    // <div className='form'>
+    //   <h2>Please answer below question to proceed further.</h2>
+    //   {error && <Alert variant="danger">{error}</Alert>}
+    //   {/* {currentUser.accessToken} */}
+    //   <form onSubmit={handleSubmit}>
+    //     <label htmlFor="q">{questions[questionIndex]}</label>
+    //     <input
+    //       id='q'
+    //       type="text"
+    //       ref={answerRef}
+    //       required
+    //     />
+    //     <button type="submit">Submit</button>
+    //   </form>
+    // </div>
+    <Box className="form">
+    <Heading as="h3" size='md'>Please answer the question below to proceed further.</Heading>
+    {error && <Alert status="error">{error}</Alert>}
+    <br />
+    <form onSubmit={handleSubmit}>
+      <FormControl isRequired >
+        <FormLabel htmlFor="q">{questions[questionIndex]}</FormLabel>
+        <Input variant='filled' id="q" type="text" ref={answerRef} />
+      </FormControl>
+      <Button colorScheme='green' type="submit">Submit</Button>
+    </form>
+  </Box>
   );
 };
 

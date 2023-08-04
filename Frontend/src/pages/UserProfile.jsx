@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getUserProfileByUserId, updateUserProfile } from '../user-profile-api';
+import { useAuth } from '../context/AuthContext';
 
 const UserProfile = () => {
     const [userData, setUserData] = useState({});
     const [isEditing, setIsEditing] = useState(false);
+    const { currentUser, logout } = useAuth(); 
 
     useEffect(() => {
         // Fetch user profile data from the API when the component mounts
@@ -12,7 +14,8 @@ const UserProfile = () => {
 
     const fetchUserProfileData = async () => {
         try {
-            const userId = "1"; // ideally it should come from localStorage.getItem('userid');
+            const userId = currentUser.uid; // ideally it should come from localStorage.getItem('userid');
+            console.log(userId)
             const userProfileData = await getUserProfileByUserId(userId);
             setUserData(userProfileData);
         } catch (error) {
