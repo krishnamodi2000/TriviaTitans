@@ -30,18 +30,18 @@ export default function UserDashboard() {
     navigate('/userProfile');
   };
 
-  // const handleTeamClick = () => {
-  //   navigate('/team');
-  // };
+  const handleTeamClick = () => {
+    navigate('/team');
+  };
 
   return (
     <div className="form">
       <h2>User Landing Page</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <strong>Email:</strong> {currentUser.email}
-      {/* <div className="button">
+      <div className="button">
         <button onClick={handleTeamClick}>Team</button>
-      </div> */}
+      </div>
       <div className="button">
         <button onClick={handleLeaderBoardClick}>LeaderBoard</button>
       </div>

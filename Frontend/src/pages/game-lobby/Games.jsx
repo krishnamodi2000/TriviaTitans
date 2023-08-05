@@ -20,8 +20,8 @@ function Games() {
     return (game.category === searchQuery || game.difficulty === searchQuery || game.time_limit === searchQuery || searchQuery === '')
   }
 
-  const filteredGames = games.filter(filterGame);
-
+  // const filteredGames = games.filter(filterGame);
+  console.log(games)
   return (
     <div>
       <h1>Available Trivia Games</h1>
@@ -35,7 +35,7 @@ function Games() {
         />
       </div>
 
-      {filteredGames.map(game => (
+      {games.map(game => (
         <div key={game.game_id}>
           <h2>{game.name}</h2>
           <p>{game.description}</p>
