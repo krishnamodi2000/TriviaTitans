@@ -1,0 +1,38 @@
+/* UserProfile.css */
+.user-profile {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.user-profile img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.user-profile p {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.edit-profile-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.edit-profile-buttons button {
+  margin-right: 10px;
+}

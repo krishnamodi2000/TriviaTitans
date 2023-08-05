@@ -10,12 +10,13 @@ exports.handler = async (event, context) => {
 
         const itemID = uuid.v4();
 
-        const { teamid, score, gamesplayed, win, loss, category } = data;
+        const { teamid, team_name, score, gamesplayed, win, loss, category } = data;
         const currentDatetime = new Date().toISOString();
 
         const item = {
             id: itemID,
             teamid: teamid,
+            team_name: team_name,
             score: score,
             gamesplayed: gamesplayed,
             win: win,
@@ -36,8 +37,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify('Data added successfully to team leaderboard.'),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     } catch (error) {
@@ -46,8 +48,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(`Error: ${error.message}`),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     }

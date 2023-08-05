@@ -4,6 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { GoogleButton } from 'react-google-button';
+import { addUserProfile } from '../user-profile-api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ const Register = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if(passwordRef.current.value !== confirmPasswordRef.current.value){
-        return setError("Passwords are not matching!")
+    if (passwordRef.current.value !== confirmPasswordRef.current.value) {
+      return setError("Passwords are not matching!")
     }
 
     try {
@@ -26,6 +27,18 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value);
       const user = userCredential.user;
       console.log(user);
+      //save user data on user profile
+      const userProfileData = { 
+        contactnumber: ' ', 
+        totalgamepoint: '0', 
+        totalgamesplayed: '0',
+        userid: user.uid, 
+        username: ' ', 
+        userprofileurl: ' ', 
+        winlossratio: '0'
+      };
+      const response = await addUserProfile(userProfileData);
+      console.log(response);
       navigate('/registerSuccessRedirect');
     } catch (error) {
       return setError(error.message);
@@ -47,40 +60,40 @@ const Register = () => {
   };
 
   return (
-          <div className="form">
-            <h2>Trivia Game Registration Page</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <form>
-                <input
-                  type="email"
-                  ref={emailRef}
-                  required
-                  placeholder="Email address"
-                />
-                <input
-                  type="password"
-                  ref={passwordRef}
-                  required
-                  placeholder="Password"
-                />
-                <input
-                  type="password"
-                  ref={confirmPasswordRef}
-                  required
-                  placeholder="Confirm Password"
-                />
+    <div className="form">
+      <h2>Trivia Game Registration Page</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <form>
+        <input
+          type="email"
+          ref={emailRef}
+          required
+          placeholder="Email address"
+        />
+        <input
+          type="password"
+          ref={passwordRef}
+          required
+          placeholder="Password"
+        />
+        <input
+          type="password"
+          ref={confirmPasswordRef}
+          required
+          placeholder="Confirm Password"
+        />
 
-              <button type="submit" onClick={onSubmit}>Register</button>
-            </form>
-            <p>Already have an account?{' '}<NavLink to="/login">Sign in</NavLink></p>
-            <div className="facebook-button" >
-              <span className="facebook-icon">
-                <i className="fab fa-facebook-f"></i>
-              </span>
-              Sign Up with Facebook
-             </div>
-            <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
-          </div>
+        <button type="submit" onClick={onSubmit}>Register</button>
+      </form>
+      <p>Already have an account?{' '}<NavLink to="/login">Sign in</NavLink></p>
+      <div className="facebook-button" >
+        <span className="facebook-icon">
+          <i className="fab fa-facebook-f"></i>
+        </span>
+        Sign Up with Facebook
+      </div>
+      <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
+    </div>
   );
 };
 

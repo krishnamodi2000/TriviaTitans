@@ -19,7 +19,7 @@ const config = {
 
 export const getUserProfileByUserId = async (userId) => {
   try {
-    const response = await axios.post('https://ciyu2dgjpepwbc5vxdidsj6ple0vlgpm.lambda-url.us-east-1.on.aws/', { userId: userId }, config);
+    const response = await axios.post(`${API_BASE_URL}/getUserProfileByUserId`, { userid: userId });
     return response.data;
   } catch (error) {
     throw new Error('Error fetching user profile: ' + error.message);
@@ -44,6 +44,9 @@ export const updateUserProfile = async (userData) => {
   }
 };
 
+/*
+  userData {userid, totalgamepoint, winlossratio, totalgamesplayed}
+*/
 export const updateUserStatistics = async (userData) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/updateUserStatistics`, userData);

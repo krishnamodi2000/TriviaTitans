@@ -23,11 +23,11 @@ export const updatePlayerScore = async (playerData) => {
 };
 
 // API endpoint to get leaderboard by category
-export const getLeaderboardByCategory = async (category) => {
+export const getLeaderboardByCategory = async (category, type) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/getleaderboardbycategory`, {
             category,
-            type: 'player',
+            type: type,
         });
         return response.data;
     } catch (error) {
@@ -36,11 +36,11 @@ export const getLeaderboardByCategory = async (category) => {
 };
 
 // API endpoint to get leaderboard by time frame
-export const getLeaderboardByTimeFrame = async (timeFrame) => {
+export const getLeaderboardByTimeFrame = async (timeFrame, type) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/getleaderboardbytimeframe`, {
             timeFrame,
-            type: 'player',
+            type: type,
         });
         return response.data;
     } catch (error) {
@@ -75,7 +75,7 @@ export const getTopPerformingTeams = async (numberOfTopTeams) => {
 export const getAllCategories = async () => {
     try {
         const response = await axios.get(`${API_BASE_URL}/getallcategory`);
-        return response.data;
+        return response.data.categories;
     } catch (error) {
         throw new Error('Error getting all categories: ' + error.message);
     }

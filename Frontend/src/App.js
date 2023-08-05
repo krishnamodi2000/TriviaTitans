@@ -9,6 +9,7 @@ import AdminLandingPage from './pages/AdminLandingPage';
 import AchievementComparison from './pages/AchievementComparison';
 import UserProfile from './pages/UserProfile';
 import TopPerforming from './pages/TopPerforming';
+import LeaderboardLookerStudio from './pages/LeaderboardLookerStudio';
 import Leaderboard from './pages/Leaderboard';
 import LoginMFAAuth from './pages/LoginMFAAuth';
 import Team from './pages/teamupdate';
@@ -23,7 +24,8 @@ import AnalysisDashbaord from './pages/admin/AnalysisDashboard/AnalysisDashboard
 import Question from './pages/admin/QuestionManagement/Question';
 import CreateTeam from './components/Teams/CreateTeam2';
 import QuestionDisplay from './pages/in-game/Quiz';
- 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 function App() {
  
   return (
@@ -48,10 +50,11 @@ function App() {
                 <Route path="/games" element={<Games />} />
                 <Route path="/games/:id" element={<GameDetails />} />
                 <Route path="/quiz/:id" element={<QuestionDisplay />} />
-                {/* <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/userProfile" element={<UserProfile />} />
                 <Route path="/compareUser" element={<AchievementComparison />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/topleaderboard" element={<TopPerforming />} /> */}
+                <Route path="/topleaderboard" element={<TopPerforming />} />
+                <Route path="/studioleaderboard" element={<LeaderboardLookerStudio />} />
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>

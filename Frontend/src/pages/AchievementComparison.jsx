@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllUsers, compareAchievement } from '../user-profile-api';
+import { Form, Button, Table } from 'react-bootstrap';
 
 const AchievementComparison = () => {
   const [users, setUsers] = useState([]);
@@ -40,47 +41,70 @@ const AchievementComparison = () => {
     }
   };
 
+  const getUserNameById = (userId) => {
+    const user = users.find((user) => user.userid === userId);
+    return user ? user.username : '';
+  };
+
   return (
     <div className="achievement-comparison">
       <h2>Achievement Comparison</h2>
-      <div>
-        <label>
-          Select User 1:
-          <select value={selectedUser1} onChange={handleUser1Change}>
+      <Form>
+        <Form.Group>
+          <Form.Label>Select User 1:</Form.Label>
+          <Form.Control as="select" value={selectedUser1} onChange={handleUser1Change}>
             <option value="">Select User</option>
             {users.map((user) => (
               <option key={user.userid} value={user.userid}>
                 {user.username}
               </option>
             ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Select User 2:
-          <select value={selectedUser2} onChange={handleUser2Change}>
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Select User 2:</Form.Label>
+          <Form.Control as="select" value={selectedUser2} onChange={handleUser2Change}>
             <option value="">Select User</option>
             {users.map((user) => (
               <option key={user.userid} value={user.userid}>
                 {user.username}
               </option>
             ))}
-          </select>
-        </label>
-      </div>
-      <button onClick={handleCompareClick}>Compare Achievements</button>
+          </Form.Control>
+        </Form.Group>
+        <Button variant="primary" onClick={handleCompareClick}>
+          Compare Achievements
+        </Button>
+      </Form>
 
       {comparisonResult && (
-        <div>
-          <h3>Comparison Result:</h3>
-          <p>User 1 (ID: {comparisonResult.userid1})</p>
-          <p>Score: {comparisonResult.score1}</p>
-          <p>Rank: {comparisonResult.rank1}</p>
-          <hr />
-          <p>User 2 (ID: {comparisonResult.userid2})</p>
-          <p>Score: {comparisonResult.score2}</p>
-          <p>Rank: {comparisonResult.rank2}</p>
+        <div className="mt-4">
+          <h3>Comparison Result</h3>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Score</th>
+                <th>Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{getUserNameById(comparisonResult.userid1)}</td>
+                <td className={comparisonResult.rank1 < comparisonResult.rank2 ? 'highlight' : ''}>
+                  {comparisonResult.score1}
+                </td>
+                <td>{comparisonResult.rank1}</td>
+              </tr>
+              <tr>
+                <td>{getUserNameById(comparisonResult.userid2)}</td>
+                <td className={comparisonResult.rank2 < comparisonResult.rank1 ? 'highlight' : ''}>
+                  {comparisonResult.score2}
+                </td>
+                <td>{comparisonResult.rank2}</td>
+              </tr>
+            </tbody>
+          </Table>
         </div>
       )}
     </div>

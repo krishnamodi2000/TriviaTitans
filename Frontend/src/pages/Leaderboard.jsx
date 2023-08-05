@@ -1,33 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import {
-  getLeaderboardByCategory,
-  getLeaderboardByTimeFrame,
-  getAllCategories,
-} from '../leaderboard-api';
+import { getLeaderboardByCategory, getLeaderboardByTimeFrame, getAllCategories } from '../leaderboard-api';
+import { Container, Row, Col, Form, Table, Button } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom"
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTimeFrame, setSelectedTimeFrame] = useState('all-time');
+  const [selectedEntityType, setSelectedEntityType] = useState('player');
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchLeaderboardData();
     fetchAllCategories();
-  }, [selectedCategory, selectedTimeFrame]);
+  }, [selectedCategory, selectedTimeFrame, selectedEntityType]);
 
   const fetchLeaderboardData = async () => {
     try {
       let leaderboardData;
       if (selectedCategory) {
-        leaderboardData = await getLeaderboardByCategory(selectedCategory);
+        leaderboardData = await getLeaderboardByCategory(selectedCategory, selectedEntityType);
       } else {
-        leaderboardData = await getLeaderboardByTimeFrame(selectedTimeFrame);
+        leaderboardData = await getLeaderboardByTimeFrame(selectedTimeFrame, selectedEntityType);
       }
       setLeaderboardData(leaderboardData);
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
+  };
+
+  const handleEntityTypeChange = (event) => {
+    setSelectedEntityType(event.target.value);
   };
 
   const fetchAllCategories = async () => {
@@ -47,37 +51,56 @@ const Leaderboard = () => {
     setSelectedTimeFrame(event.target.value);
   };
 
+  const naviagtePlayersTeams = () => {
+    navigate("/topleaderboard");
+  };
+
+  const navigateDashboard = () => {
+    navigate("/studioleaderboard");
+  };
+
   return (
-    <div className="leaderboard">
-      <h2>Leaderboard</h2>
-      <div>
-        <label>
-          Filter by Category:
-          <select value={selectedCategory} onChange={handleCategoryChange}>
-            <option value="">All Categories</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Filter by Time Frame:
-          <select value={selectedTimeFrame} onChange={handleTimeFrameChange}>
-            <option value="all-time">All Time</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-        </label>
-      </div>
-      <table>
+    <Container className="leaderboard">
+      <h2 className="text-center mb-4">Leaderboard</h2>
+      <Row className="justify-content-center">
+        <Col xs={12} sm={6} md={4}>
+          <Form.Group controlId="entityTypeSelect">
+            <Form.Label>Select Entity Type:</Form.Label>
+            <Form.Control as="select" value={selectedEntityType} onChange={handleEntityTypeChange}>
+              <option value="player">Players</option>
+              <option value="team">Teams</option>
+            </Form.Control>
+          </Form.Group>
+        </Col>
+        <Col xs={12} sm={6} md={4}>
+          <Form.Group controlId="categorySelect">
+            <Form.Label>Filter by Category:</Form.Label>
+            <Form.Control as="select" value={selectedCategory} onChange={handleCategoryChange}>
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Col>
+        <Col xs={12} sm={6} md={4}>
+          <Form.Group controlId="timeFrameSelect">
+            <Form.Label>Filter by Time Frame:</Form.Label>
+            <Form.Control as="select" value={selectedTimeFrame} onChange={handleTimeFrameChange}>
+              <option value="all-time">All Time</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </Form.Control>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Table striped bordered hover responsive style={{marginTop: '20px'}}>
         <thead>
           <tr>
-            <th>Player ID</th>
+            <th>Name</th>
             <th>Score</th>
             <th>Wins</th>
             <th>Losses</th>
@@ -86,8 +109,8 @@ const Leaderboard = () => {
         </thead>
         <tbody>
           {leaderboardData.map((entry) => (
-            <tr key={entry.playerid}>
-              <td>{entry.playerid}</td>
+            <tr key={entry.playerid || entry.teamid}>
+              <td>{selectedEntityType === 'player' ? entry.player_name : entry.team_name}</td>
               <td>{entry.score}</td>
               <td>{entry.win}</td>
               <td>{entry.loss}</td>
@@ -95,8 +118,16 @@ const Leaderboard = () => {
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </Table>
+      <div className="text-center mt-4">
+          <Button variant="primary" style={{marginTop: '10px'}} onClick={naviagtePlayersTeams}>
+            Top Players/Teams
+          </Button>
+          <Button variant="primary" style={{marginTop: '10px'}} onClick={navigateDashboard}>
+            Looker Studio Dashboard
+          </Button>
+      </div>
+    </Container>
   );
 };
 
