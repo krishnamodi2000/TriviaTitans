@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { Alert } from 'react-bootstrap';
 import { auth, googleProvider } from '../firebase';
 import { GoogleButton } from 'react-google-button';
+import './main.css';
 
 const Login = () => {
   const navigate = useNavigate();

@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Card, Button, Alert } from "react-bootstrap"
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom"
+import './main.css';
 
 export default function UserDashboard() {
   const [error, setError] = useState("")
@@ -33,6 +34,7 @@ export default function UserDashboard() {
   // const handleTeamClick = () => {
   //   navigate('/team');
   // };
+  console.log(currentUser)
 
   return (
     <div className="form">

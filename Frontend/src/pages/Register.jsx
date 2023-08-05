@@ -4,6 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { GoogleButton } from 'react-google-button';
+import './main.css';
 
 const Register = () => {
   const navigate = useNavigate();

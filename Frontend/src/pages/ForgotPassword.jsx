@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-import { sendPasswordResetEmail } from 'firebase/auth' 
+import { sendPasswordResetEmail } from 'firebase/auth';
+import './main.css';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();

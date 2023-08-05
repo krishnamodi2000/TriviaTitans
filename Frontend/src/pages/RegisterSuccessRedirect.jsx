@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './main.css';
 
 const RegisterSuccessRedirect = () => {
   const navigate = useNavigate();

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, Button, Alert } from "react-bootstrap";
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import './main.css';
 
 export default function AdminDashboard() {
   const [error, setError] = useState("")
@@ -17,6 +18,7 @@ export default function AdminDashboard() {
       setError("Failed to log out")
     }
   }
+  console.log(currentUser)
 
   const handleQuestionManagementClick = () => {
     navigate('/question');

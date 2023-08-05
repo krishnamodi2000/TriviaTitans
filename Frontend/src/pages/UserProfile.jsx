@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserProfileByUserId, updateUserProfile } from '../user-profile-api';
 import { useAuth } from '../context/AuthContext';
+import './main.css';
 
 const UserProfile = () => {
     const [userData, setUserData] = useState({});
