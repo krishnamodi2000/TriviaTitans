@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "serverlesssummer2023",
+  "private_key_id": "6eb6a8916018230e2da02299f6634b8dd41dcb3f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuv159UZ2yV6Wy\nplivM/2npkQL+Txtsjhe6J1PIuXjLhLJa1KLRR+q584ApQrGfqPewMbhlS5KNrDw\nVVIAF6P4M/5i8zpBHNg5lH1P98pgRqUThjcn4DFTP4jxLZDeYc+9OI0gBxHm52ju\nhRDeO65J0OA8l+PSKNkRvoOQa90+S86+fazgADXooPJpOL8BrkbyXHWU/6CiY9T+\nNQiUfV3q2h8FL/qmYnKvbP1XlBVJ0QbQ1DrXnMXKU19epsBwUMviAu+VMc1Ofpzz\n89QBpxUuo7UgX4UmAGVHWhgrAS4jZEfptQqWk97BnatF7UttpWNBUyqHp9d8zFz/\ngzqvqLmbAgMBAAECggEACX9pOVJ4SbstzFnyNAOVY8lLpYL0X9nx6mamNijlacWV\nS9FDeUJWiEl1Dt/piARWD8NWi+g5zdrPHyDkBhFC3jilOOeTYPqaXfbOIMyM+VKd\nokQHN2meBLJNVR5u40dZrSUntnfr5yrorx4YXpvLy0NJDMIMpd2GfspmCDF0ovAQ\nxpsZTpvMxvfEGc5IreKSYLjFZ+yM7uVx0VlQLb+xL7++Fj2c92Xb+yTM2aiBi2Z3\n49XZ3yTtBW4//o2FsmL1XSOjRgYwfXggu8JRAALfpc4mQWgwYHyD2P2A5BTUSc0P\nHgEdfBGuJugyPM5I4Fg3ZrAJJi5WC0BuU4a5YiziIQKBgQDmqK4aSL94wdbirMvV\n1dOOOH9lmiFSCwwYyVxB/PEapqkRQT162gY7neVhPV0CTuKfkxyqMuEBfwZiJ/Ug\nxg3mjWWYIYRRqqwN+VVkFlYP4d/rbtNYwfGcIOq9bLXcBH5ZSbTf26eursLQy/J4\nLly6ogNgSZdjlRRkya9MDIyC4wKBgQDB8iwlqEdAVJpoKqVdlpAaFqL7hNyFQH82\nU/T7jjbQdW1vpziOrK2dxSXeC75j6YmxY4oFSdUyX3oFWV6rBu0Z7qGfxvEA6TRJ\nas3REERAnY+bJ2HJKX3fUlJ4q8Wd03ta7Zpvo9cvmahRkIJk9CxcO086DmE32gd8\n4ob3VzJT6QKBgDOZhqFApvzXuD+rUko69IG7Z9yN12hoKkOdQDNO540DvYyroJpM\nDdrmXrsbJCRxC0eRfHcivK0+AmqQ78huJgvuk8ytqtEuMiFKJu0mBgi1igc8GrGf\naXJ49qp7mE9o/e7xizINDH0KgXB+P3bdQEdMGR9AN0rCvfYyHDISGJjrAoGBALM1\nX9+n/7aMtmRcS5MPxbWlhxIb8VxbfXCo4Wz0OugiKW4LOTJ0krR+7/+eIF3X9Lhp\nvqYmVA6ItIpuyxADhWD55HRr8lOiKQNR4j405qxCKuj12eB0K3AIdFY2epLcUFZz\nyMkxvmuocyRzAFniWX8b+pgto11lZJfcBVRVSRbJAoGAI9/xo4ElkKssERCQkwxT\nRNPA6A2ZSB+iGTHz355kG0mKou/XLNvt/gNrP/XHi/8mrkcJikZPPNio67fqZib+\nVXEYaiLgF4EkXTpxa87uo3a3x4PD29bRXULzDEHxh42yb2UdbrMoVW7bj+OmLJ8t\nBI7Jp3oGMlOsy75MvyMHD2U=\n-----END PRIVATE KEY-----\n",
+  "client_email": "projectserverlessaccount@serverlesssummer2023.iam.gserviceaccount.com",
+  "client_id": "106604447713675112402",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/projectserverlessaccount%40serverlesssummer2023.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
