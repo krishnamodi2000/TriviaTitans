@@ -11,26 +11,28 @@ exports.handler = async (event, context) => {
 
         const scanParams = {
             TableName: TABLE_NAME,
-            ProjectionExpression: 'teamid, score, gamesplayed, win, loss, gamesplayeddate',
+            ProjectionExpression: 'teamid, team_name, score, gamesplayed, win, loss, gamesplayeddate',
         };
 
         const result = await dynamoDB.scan(scanParams).promise();
 
         const teamStatsMap = new Map();
         result.Items.forEach((team) => {
-            const { teamid, score, win, loss } = team;
+            const { teamid, team_name, score, win, loss } = team;
             if (teamStatsMap.has(teamid)) {
                 const existingStats = teamStatsMap.get(teamid);
                 teamStatsMap.set(teamid, {
                     score: existingStats.score + score,
                     win: existingStats.win + win,
                     loss: existingStats.loss + loss,
+                    team_name: team_name
                 });
             } else {
                 teamStatsMap.set(teamid, {
                     score: score,
                     win: win,
                     loss: loss,
+                    team_name: team_name
                 });
             }
         });
@@ -45,6 +47,7 @@ exports.handler = async (event, context) => {
             win: entry[1].win,
             loss: entry[1].loss,
             rank: index + 1,
+            team_name: entry[1].team_name
         }));
 
         // Slice the top number of teams based on the requested count
@@ -55,8 +58,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(topTeams),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     } catch (error) {
@@ -65,8 +69,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(`Error: ${error.message}`),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     }

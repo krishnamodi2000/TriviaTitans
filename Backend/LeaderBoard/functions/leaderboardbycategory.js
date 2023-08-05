@@ -14,18 +14,19 @@ exports.handler = async (event, context) => {
 
         if (type === 'player') {
             tableName = PLAYER_TABLE_NAME;
-            key = 'playerid'; // Replace 'playerid' with the appropriate primary key of the player table
+            key = 'playerid, player_name';
         } else if (type === 'team') {
             tableName = TEAM_TABLE_NAME;
-            key = 'teamid'; // Replace 'teamid' with the appropriate primary key of the team table
+            key = 'teamid, team_name';
         } else {
             return {
                 statusCode: 400,
                 body: JSON.stringify('Invalid type. Please provide either "player" or "team".'),
                 headers: {
                     'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Credentials': 'true'
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': 'true',
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
                 },
             };
         }
@@ -47,8 +48,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(result.Items),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     } catch (error) {
@@ -57,8 +59,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(`Error: ${error.message}`),
             headers: {
                 'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Credentials': 'true'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
         };
     }

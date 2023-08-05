@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
+import Chatbox from '../in-game/Chat';
+
 
 function GameDetails() {
   const { id } = useParams();
@@ -13,6 +15,12 @@ function GameDetails() {
     });
   }, [id]);
 
+  const chatboxStyle = {
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+  };
+
   return (
     <div>
       <h1>{game.name}</h1>
@@ -22,7 +30,11 @@ function GameDetails() {
       <p>Category: {game.category}</p>
       <p>Participants: {game.participants_count}</p>
       <p>Quiz Duration: {game.time_limit}</p>
-      <Link to={`/game/${game.game_id}`}>Join Game</Link>
+      <Link to={`/quiz/${game.game_id}`}>Join Game</Link>
+
+      <div style={chatboxStyle}>
+        <Chatbox />
+    </div>
     </div>
   );
 }
