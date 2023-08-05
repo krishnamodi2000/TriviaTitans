@@ -11,9 +11,15 @@ export const addUserProfile = async (userData) => {
   }
 };
 
+const config = {
+  headers: {  
+    'content-type': 'application/json'
+  }
+};
+
 export const getUserProfileByUserId = async (userId) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/getUserProfileByUserId`, { userid: userId });
+    const response = await axios.post('https://ciyu2dgjpepwbc5vxdidsj6ple0vlgpm.lambda-url.us-east-1.on.aws/', { userId: userId }, config);
     return response.data;
   } catch (error) {
     throw new Error('Error fetching user profile: ' + error.message);

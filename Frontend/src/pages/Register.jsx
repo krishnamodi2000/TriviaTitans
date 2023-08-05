@@ -73,6 +73,12 @@ const Register = () => {
               <button type="submit" onClick={onSubmit}>Register</button>
             </form>
             <p>Already have an account?{' '}<NavLink to="/login">Sign in</NavLink></p>
+            <div className="facebook-button" >
+              <span className="facebook-icon">
+                <i className="fab fa-facebook-f"></i>
+              </span>
+              Sign Up with Facebook
+             </div>
             <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
           </div>
   );

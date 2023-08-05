@@ -57,7 +57,19 @@ const Login = () => {
       </form>
       <p>Don't have an account? <NavLink to="/register">Register</NavLink></p>
       <p><NavLink to="/forgotPassword">Forgot Password?</NavLink></p>
+      <div className="facebook-button" >
+        <span className="facebook-icon">
+          <i className="fab fa-facebook-f"></i>
+        </span>
+        Login with Facebook
+      </div>
       <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
+      <iframe
+        src="https://d237pstd9kt2he.cloudfront.net"
+        title="Chatbot"
+        width="100%"
+        height="500px"
+      />
     </div>
 
   );

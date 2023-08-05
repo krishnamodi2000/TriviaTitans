@@ -8,7 +8,7 @@ export default function UserDashboard() {
   const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
 
-  async function handleLogout() {
+  async function handleLogoutClick() {
     setError("")
     try {
       await logout()
@@ -18,20 +18,48 @@ export default function UserDashboard() {
     }
   }
 
+  const handleLeaderBoardClick = () => {
+    navigate('/leaderboard');
+  };
+
+  const handleGameClick = () => {
+    navigate('/games');
+  };
+
+  const handleProfileClick = () => {
+    navigate('/userProfile');
+  };
+
+  // const handleTeamClick = () => {
+  //   navigate('/team');
+  // };
+
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">User Profile</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <strong>Email:</strong> {currentUser.email}
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        <Button variant="link" onClick={handleLogout}>
-          Log Out
-        </Button>
+    <div className="form">
+      <h2>User Landing Page</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <strong>Email:</strong> {currentUser.email}
+      {/* <div className="button">
+        <button onClick={handleTeamClick}>Team</button>
+      </div> */}
+      <div className="button">
+        <button onClick={handleLeaderBoardClick}>LeaderBoard</button>
       </div>
-    </>
-  )
-}
+      <div className="button">
+        <button onClick={handleGameClick}>Game</button>
+      </div>
+      <div className="button">
+        <button onClick={handleProfileClick}>Profile</button>
+      </div>
+      <iframe
+        src="https://d237pstd9kt2he.cloudfront.net"
+        title="Chatbot"
+        width="100%"
+        height="500px"
+      />
+      <div className="button">
+        <button onClick={handleLogoutClick}>Logout</button>
+      </div>
+    </div>
+  );
+};
