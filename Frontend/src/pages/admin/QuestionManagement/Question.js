@@ -20,7 +20,7 @@ const Question = () => {
       const response = await axios.get(
         "https://fwqbr8yyv2.execute-api.us-east-1.amazonaws.com/Admintest/getquestions"
       );
-      const parsedData = JSON.parse(response.data.body);
+      const parsedData = response.data;
       setQuestions(parsedData);
     } catch (error) {
       console.error("Error fetching questions:", error);

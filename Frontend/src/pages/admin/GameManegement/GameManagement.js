@@ -22,29 +22,78 @@ const GameManagement = () => {
   const fetchGamesData = async () => {
     try {
       const response = await axios.get(`${apiUrl}/getalllgames`);
-      const data = JSON.parse(response.data.body);
-      setGames(data);
+      console.log(response.data)
+      // 
+      setGames(response.data); 
+      // setGames(data);
     } catch (error) {
       console.error('Error fetching game data:', error);
     }
   };
 
+  console.log(formData)
+  // const handleChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
+  // };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
+    console.log(`Setting ${name} to ${value}`);
     setFormData({
       ...formData,
       [name]: value,
     });
   };
+  
 
+  // const handleCreateGame = async () => {
+  //   try {
+  //     console.log(games);
+  //     await axios.post(`${apiUrl}/creategame`, formData);
+  //     fetchGamesData(); // Refresh the game table after creating a new game
+  //   } catch (error) {
+  //     console.error('Error creating a new game:', error);
+  //   }
+  // };
+  const config = {
+    'headers': {
+      'content-type': 'application/json'
+    }
+  };
+
+  // const handleCreateGame = async () => {
+  //   try {
+  //     await axios.post(`${apiUrl}/creategame`, formData, config);
+  //     fetchGamesData(); // Refresh the game table after creating a new game
+  //   } catch (error) {
+  //     console.error('Error creating a new game:', error);
+  //     if (error.response) {
+  //       console.error('Response data:', error.response.data);
+  //     }
+  //   }
+  // };
   const handleCreateGame = async () => {
     try {
-      await axios.post(`${apiUrl}/creategame`, formData);
+      // Check if required fields are filled out
+      if (!formData.category || !formData.difficulty_level || !formData.time_frame) {
+        console.error('Please fill out all required fields');
+        return;
+      }
+  
+      await axios.post(`${apiUrl}/creategame`, formData, config);
       fetchGamesData(); // Refresh the game table after creating a new game
     } catch (error) {
       console.error('Error creating a new game:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+      }
     }
   };
+  
 
   // const handleScheduleGame = async () => {
   //   try {
