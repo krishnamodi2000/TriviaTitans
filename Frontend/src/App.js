@@ -11,12 +11,14 @@ import UserProfile from './pages/UserProfile';
 import TopPerforming from './pages/TopPerforming';
 import Leaderboard from './pages/Leaderboard';
 import LoginMFAAuth from './pages/LoginMFAAuth';
+import Team from './pages/teamupdate';
 import PrivateRoute from './PrivateRoute';
 import Games from './pages/game-lobby/Games';
 import GameDetails from './pages/game-lobby/GameDetails';
 import { BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext"
+import CreateTeam from './components/Teams/CreateTeam2';
  
 function App() {
  
@@ -35,6 +37,10 @@ function App() {
                 <Route path="/userDashboard" element={<UserDashboard />} />
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/adminLandingPage" element={<AdminLandingPage />} />
+                <Route path="/team" element={<Team/>} />
+                <Route path="/createteam" element={<CreateTeam/>} />
+                {/* <Route path="/manageteam" element={<ManageTeam/>} /> */}
+                {/* <Route path="/viewstats" element={<ViewStatistics/>} /> */}
                 <Route path="/games" element={<Games />} />
                 <Route path="/games/:id" element={<GameDetails />} />
                 <Route path="/userProfile" element={<UserProfile />} />
