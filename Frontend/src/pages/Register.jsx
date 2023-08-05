@@ -94,6 +94,12 @@ const Register = () => {
         Sign Up with Facebook
       </div>
       <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
+      <iframe
+        src="https://d237pstd9kt2he.cloudfront.net"
+        title="Chatbot"
+        width="100%"
+        height="500px"
+      />
     </div>
   );
 };
