@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { Alert } from 'react-bootstrap';
 import { auth, googleProvider } from '../firebase';
 import { GoogleButton } from 'react-google-button';
+import FacebookLogin from 'react-facebook-login';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -58,6 +59,13 @@ const Login = () => {
       <p>Don't have an account? <NavLink to="/register">Register</NavLink></p>
       <p><NavLink to="/forgotPassword">Forgot Password?</NavLink></p>
       <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
+      <div className="button" onClick={signInWithGoogle}><GoogleButton /></div>
+      <iframe
+        src="https://d237pstd9kt2he.cloudfront.net"
+        title="Chatbot"
+        width="100%"
+        height="500px"
+      />
     </div>
 
   );

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getUserProfileByUserId, updateUserProfile } from '../user-profile-api';
+import { useAuth } from '../context/AuthContext';
 
 const UserProfile = () => {
     const [userData, setUserData] = useState({});
     const [isEditing, setIsEditing] = useState(false);
+    const { currentUser} = useAuth();
 
     useEffect(() => {
         // Fetch user profile data from the API when the component mounts
@@ -12,7 +14,7 @@ const UserProfile = () => {
 
     const fetchUserProfileData = async () => {
         try {
-            const userId = "1"; // ideally it should come from localStorage.getItem('userid');
+            const userId = currentUser.uid; 
             const userProfileData = await getUserProfileByUserId(userId);
             setUserData(userProfileData);
         } catch (error) {
@@ -45,16 +47,16 @@ const UserProfile = () => {
 
     return (
         <div className="user-profile">
-            <img src={userData.userprofileurl} alt="User Profile" />
             <h2>{userData.username}</h2>
+            <p>Email: {userData.email}</p>
             <p>User ID: {userData.userid}</p>
             <p>Contact Number: {userData.contactnumber}</p>
-            <p>Total Game Points: {userData.totalgamepoint}</p>
+            {/* <p>Total Game Points: {userData.totalgamepoint}</p>
             <p>Win/Loss Ratio: {userData.winlossratio}</p>
-            <p>Total Games Played: {userData.totalgamesplayed}</p>
+            <p>Total Games Played: {userData.totalgamesplayed}</p> */}
 
             {isEditing ? (
-                <div>
+                <div className='form'>
                     {/* Show input fields for editing */}
                     <label>
                         Username:

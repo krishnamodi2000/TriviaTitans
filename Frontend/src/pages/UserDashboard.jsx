@@ -51,6 +51,12 @@ export default function UserDashboard() {
       <div className="button">
         <button onClick={handleProfileClick}>Profile</button>
       </div>
+      <iframe
+        src="https://d237pstd9kt2he.cloudfront.net"
+        title="Chatbot"
+        width="100%"
+        height="500px"
+      />
       <div className="button">
         <button onClick={handleLogoutClick}>Logout</button>
       </div>
