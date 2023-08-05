@@ -17,6 +17,9 @@ import GameDetails from './pages/game-lobby/GameDetails';
 import { BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext"
+import GameManagement from './pages/admin/GameManegement/GameManagement';
+import AnalysisDashbaord from './pages/admin/AnalysisDashboard/AnalysisDashboard';
+import Question from './pages/admin/QuestionManagement/Question';
  
 function App() {
  
@@ -41,6 +44,9 @@ function App() {
                 <Route path="/compareUser" element={<AchievementComparison />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/topleaderboard" element={<TopPerforming />} />
+                <Route path="/game" element={<GameManagement/>}/>
+                <Route path="/dashboard" element={<AnalysisDashbaord/>}/>
+                <Route path='/question' element={<Question/>}/>
             </Route>
             <Route path="/forgotPassword" element={<ForgotPassword />} />
           </Routes>

@@ -18,6 +18,18 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleQuestionManagementClick = () => {
+    navigate('/question');
+  };
+
+  const handleGameManagementClick = () => {
+    navigate('/game');
+  };
+
+  const handleDashboardClick = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <>
       <Card>
@@ -25,6 +37,15 @@ export default function AdminDashboard() {
           <h2 className="text-center mb-4">Admin Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <strong>Email:</strong> {currentUser.email}
+        <div className="button">
+          <button onClick={handleQuestionManagementClick}>Question Management</button>
+        </div>
+        <div className="button">
+          <button onClick={handleGameManagementClick}>Game Management</button>
+        </div>
+        <div className="button">
+          <button onClick={handleDashboardClick}>Dashboard</button>
+        </div>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
