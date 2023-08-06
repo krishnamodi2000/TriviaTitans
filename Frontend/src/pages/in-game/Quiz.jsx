@@ -22,7 +22,8 @@ const QuestionDisplay = () => {
 
   const socket = useRef(null);
   const {currentUser} = useAuth();
-  const [userName, setuserName] = useState();
+  const [userName, setuserName] = useState('');
+  const [teamName, setteamName] = useState('');
 
 
   useEffect(() => {
@@ -32,7 +33,14 @@ const QuestionDisplay = () => {
     }, config).then(response => {
       setuserName(response.data.username);
     })
-  }, [userName]);
+
+    axios.post('https://us-central1-serverless-project-394120.cloudfunctions.net/ShowTeam',
+    {"member_email": currentUser.email}
+    ).then(response => {
+      console.log(response)
+      setteamName(response.data.Teams[0])
+    })
+  }, [userName, teamName]);
 
   useEffect(() => {
     socket.current = new WebSocket('wss://nquds1e5se.execute-api.us-east-1.amazonaws.com/production');
@@ -44,8 +52,10 @@ const QuestionDisplay = () => {
       setuserName(response.data.username);
     })
 
+
+
     socket.current.onopen = () => {
-      const requestMessage = JSON.stringify({ action: 'joinGame', game_id: id, player: userName , team_id: "abc" });
+      const requestMessage = JSON.stringify({ action: 'joinGame', game_id: id, player: userName , team_id: "alpha" });
       socket.current.send(requestMessage);
     };
 
@@ -121,12 +131,12 @@ const QuestionDisplay = () => {
     console.log(question.answer);
     if (selectedAnswer === question.answer) {
       socket.current.send(
-        JSON.stringify({ action: 'postScores', team_id: "abc" , question_number: questionNumber, score: 1 })
+        JSON.stringify({ action: 'postScores', team_id: "alpha" , question_number: questionNumber, score: 1 })
       )
     }
     else{
       socket.current.send(
-        JSON.stringify({ action: 'postScores', team_id: "abc", question_number: questionNumber, score: 0 })
+        JSON.stringify({ action: 'postScores', team_id: "alpha", question_number: questionNumber, score: 0 })
       )
     }
     setAnswerSubmitted(true);
